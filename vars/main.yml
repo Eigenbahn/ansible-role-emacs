@@ -1,0 +1,22 @@
+---
+# vars file for eigenbahn.emacs
+
+emacs_configure_opts: ''
+
+emacs_bgex_patch_repo: http://umiushi.com/~wac/bgex/
+
+emacs_bgex_patch_version_map:
+  "26.3": patch-bgex_20171115_0-git-emacs-master.tar.xz
+  "26.2": patch-bgex_20171115_0-git-emacs-master.tar.xz
+  "26.1": patch-bgex_20171115_0-git-emacs-master.tar.xz
+  "25.3": patch-bgex_20160201_0-git-emacs-master.tar.xz
+  "25.2": patch-bgex_20160201_0-git-emacs-master.tar.xz
+  "25.1": patch-bgex_20160201_0-git-emacs-master.tar.xz
+  "24.5": patch-bgex_20150515_0-emacs-24.5.tar.xz
+  "24.4": patch-bgex_20140112_0-bzr-emacs-trunk.tar.bz2
+  "24.3": patch-bgex_20121216_0-bzr-emacs-trunk.tar.bz2
+  "24.2": patch-bgex_20120916_0-emacs-24.2.tar.bz2
+  "24.1": patch-bgex_20111215_0-bzr-emacs-trunk.tar.bz2
+  "23.3a": patch-bgex_20110822_0-emacs-23.3a.tar.bz2
+  "22.3": patch-bgex_20060712_0-emacs-cvshead.tar.bz2
+  "21.4": patch-bgex_20050921_0-emacs-21.4.tar.bz2

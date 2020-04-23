@@ -1,0 +1,5 @@
+---
+# tasks file for eigenbahn.emacs
+
+- include: linux.yml
+  when: ansible_system == 'Linux'

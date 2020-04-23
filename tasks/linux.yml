@@ -1,0 +1,63 @@
+---
+# tasks/linux file for eigenbahn.emacs
+
+
+## ------------------------------------------------------------------------
+## INSTALLED ?
+
+- name: emacs | linux - is installed?
+  shell: command -v emacs >/dev/null 2>&1
+  register: is_emacs_installed
+  ignore_errors: yes
+  changed_when: False
+
+- name: emacs | linux - installed version?
+  when: is_emacs_installed.rc == 0
+  command: emacs --version
+  register: output_emacs_version
+  ignore_errors: yes
+  changed_when: False
+
+- name: emacs | linux - needs install?
+  set_fact:
+    emacs_needs_install: '{{ is_emacs_installed.rc != 0 or output_emacs_version.stdout.find("GNU Emacs " + emacs_version) == -1 or emacs_force_reinstall }}'
+
+
+## ------------------------------------------------------------------------
+## INSTALL
+
+- when:
+    - emacs_needs_install
+    - ansible_distribution == 'Ubuntu' or ansible_distribution == "Debian"
+  include: install-debian.yml
+
+
+## ------------------------------------------------------------------------
+## ENABLE USER SERVICE (SYSTEMD)
+
+- name: emacs | linux - user systemd unit exists?
+  stat:
+    path: /usr/local/lib/systemd/user/emacs.service
+  register: emacs_systemd_unit
+
+- name: emacs | linux - enable user systemd unit
+  when:
+    - emacs_enable_user_service
+    - emacs_version is version('26.1', '>=')
+    - emacs_systemd_unit.stat.exists
+    - ansible_service_mgr == "systemd"
+  become_user: '{{ item }}'
+  systemd:
+    name: emacs
+    scope: user
+    enabled: yes
+  loop: '{{ emacs_enable_user_service_for_users }}'
+  register: emacs_enable_user_systemd
+
+- name: reload systemd deamon (user)
+  when: emacs_enable_user_systemd.changed
+  become_user: '{{ item }}'
+  systemd:
+    scope: user
+    daemon_reload: yes
+  loop: '{{ emacs_enable_user_service_for_users }}'

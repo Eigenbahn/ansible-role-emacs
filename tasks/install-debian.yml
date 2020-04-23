@@ -1,0 +1,28 @@
+---
+# tasks/install-debian file for eigenbahn.emacs
+
+
+## ------------------------------------------------------------------------
+## FROM PACKAGE MANAGER
+
+- name: emacs | install using package manager
+  when: emacs_install_method == "package"
+  apt:
+    name: emacs={{ emacs_version }}
+
+
+## ------------------------------------------------------------------------
+## BUILT FROM SOURCE
+
+- name: install emacs build dependencies
+  when: emacs_install_method == "compile"
+  apt:
+    # name: emacs25 # 19.04
+    name: emacs # 19.10
+    state: build-dep
+
+- when: emacs_install_method == "compile"
+  include: compilation-flags.yml
+
+- when: emacs_install_method == "compile"
+  include: build.yml

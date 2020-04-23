@@ -1,0 +1,31 @@
+---
+# defaults file for eigenbahn.emacs
+
+emacs_version: '26.2'
+
+# either: package, compile
+emacs_install_method: compile
+
+emacs_force_reinstall: no
+emacs_force_build: no
+
+emacs_temp_folder: '/tmp'
+
+emacs_enable_user_service: no
+emacs_enable_user_service_for_users: []
+
+emacs_install_src: yes
+emacs_src_parent_folder: /usr/src
+
+
+## ------------------------------------------------------------------------
+## COMPILATION-RELATED
+
+# compilation flags
+emacs_configure_opts: ''
+# helpers for specific flags
+emacs_nox: no
+emacs_modules: yes
+
+# patches
+emacs_apply_patch_bgex: no

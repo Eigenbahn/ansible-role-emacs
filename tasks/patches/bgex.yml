@@ -1,0 +1,22 @@
+---
+# tasks/patches/bgex file for eigenbahn.emacs
+
+- name: emacs | patch - bgex - lookup url (1)
+  set_fact:
+    emacs_bgex_patch_file: '{{ emacs_bgex_patch_version_map[emacs_version] }}'
+- name: emacs | patch - bgex - lookup url (2)
+  set_fact:
+    emacs_bgex_patch_file_noext: '{{ emacs_bgex_patch_file.split(".tar")[0] }}'
+
+- name: emacs | patch - bgex - download
+  unarchive:
+    remote_src: yes
+    src: '{{ emacs_bgex_patch_repo }}{{ emacs_bgex_patch_file }}'
+    dest: '{{ emacs_temp_folder }}/'
+
+- name: emacs | patch - bgex - apply
+  patch:
+    remote_src: True
+    src: '{{ emacs_temp_folder }}/{{ emacs_bgex_patch_file_noext }}/{{ emacs_bgex_patch_file_noext }}'
+    basedir: '{{ emacs_temp_folder }}/emacs-{{ emacs_version }}'
+    strip: 1

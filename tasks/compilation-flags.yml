@@ -1,0 +1,14 @@
+---
+# tasks/compilation-flags file for eigenbahn.emacs
+
+- name: emacs | set nox compilation flag
+  when: emacs_nox
+  set_fact:
+    emacs_configure_opts: '{{ emacs_configure_opts }} --with-x-toolkit=no'
+
+- name: emacs | set modules compilation flag
+  when:
+    - emacs_modules
+    - emacs_version is version('25.1', '>=')
+  set_fact:
+    emacs_configure_opts: '{{ emacs_configure_opts }} --with-modules'

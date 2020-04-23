@@ -1,0 +1,63 @@
+---
+# tasks/build file for eigenbahn.emacs
+
+
+## ------------------------------------------------------------------------
+## DOWNLOAD SRC
+
+- name: emacs | build - test src already downloaded
+  stat:
+    path: '{{ emacs_temp_folder }}/emacs-{{ emacs_version }}'
+  register: stat_emacs_src
+
+- name: emacs | build -purge old downloaded src
+  when:
+    - emacs_force_build
+    - stat_emacs_src.stat.exists == False
+  file:
+    path: '{{ emacs_temp_folder }}/emacs-{{ emacs_version }}'
+    state: absent
+
+- name: emacs | build - (re-)download src
+  when: stat_emacs_src.stat.exists == False
+  unarchive:
+    remote_src: yes
+    src: 'ftp://ftp.gnu.org/pub/gnu/emacs/emacs-{{ emacs_version }}.tar.xz'
+    dest: '{{ emacs_temp_folder }}/'
+
+
+## ------------------------------------------------------------------------
+## PATCHES
+
+- when: emacs_apply_patch_bgex
+  include: patches/bgex.yml
+
+
+## ------------------------------------------------------------------------
+## INSTALL SRC
+
+- name: emacs | build - install src
+  when: emacs_install_src
+  copy:
+    remote_src: yes
+    src: '{{ emacs_temp_folder }}/emacs-{{ emacs_version }}'
+    dest: '{{ emacs_src_parent_folder }}'
+
+
+## ------------------------------------------------------------------------
+## BUILD
+
+- name: emacs | build - configure
+  command: ./configure {{ emacs_configure_opts }}
+  args:
+    chdir: '{{ emacs_temp_folder }}/emacs-{{ emacs_version }}'
+
+- name: emacs | build - build
+  make:
+    chdir: '{{ emacs_temp_folder }}/emacs-{{ emacs_version }}'
+
+- name: emacs | build - install (built from src)
+  when: False
+  make:
+    target: install
+    chdir: '{{ emacs_temp_folder }}/emacs-{{ emacs_version }}'
